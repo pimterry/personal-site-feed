@@ -1,1 +1,1 @@
-web: newrelic-admin run-program python personal_feed/main.py
+web: python personal_feed/main.py

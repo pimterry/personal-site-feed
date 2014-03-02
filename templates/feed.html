@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Feeds Page</title>
+    <link rel="stylesheet" href="/static/css/normalize.css" />
+    <link rel="stylesheet" href="/static/css/site.css" />
+</head>
+<body>
+    <main>
+        <header>
+            <img src='/static/images/logo.png' />
+        </header>
+        <section id="feedItems">
+            <h1>My feeds:</h1>
+            <ul>
+                {% for item in feed_items %}
+                    <li><article class="feedItem">
+                        {{ item|safe }}
+                    </article></li>
+                {% endfor %}
+            </ul>
+        </section>
+        <footer>Background from subtlepatterns.com - CC BY-SA 3.0</footer>
+    </main>
+</body>
+</html>

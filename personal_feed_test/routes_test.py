@@ -3,12 +3,14 @@ from unittest.mock import Mock, patch
 
 from personal_feed.routes import setup_routes
 
+@patch("personal_feed.routes.render_template")
 class RoutesTests(unittest.TestCase):
     def setUp(self):
+        feed_source = Mock(**{"feed_items": []})
         self.app = AppMock()
-        setup_routes(self.app)
+        setup_routes(self.app, feed_source)
 
-    def test_root_route_throws_no_exceptions(self):
+    def test_root_route_throws_no_exceptions(self, renderer):
         self.app['/']()
 
 class AppMock:

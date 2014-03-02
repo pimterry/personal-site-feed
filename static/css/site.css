@@ -1,0 +1,45 @@
+html, body {
+    height: 100%;
+    background-color: #222;
+    background-image: url("/static/images/squared_metal.png");
+}
+
+main {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    width: 35%;
+    min-height: 96%;
+    background-color: #fafafa;
+    padding: 1% 1%;
+    box-shadow: 0 0 10px 5px rgba(0,0,0,0.3);
+}
+
+header {
+    width: 110%;
+    margin: 0 0 10px -5%;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.3);
+
+    background-color: #285fa3;
+    color: #fafafa;
+
+    position: relative;
+    outline: 1px solid #1A3E6B;
+    border: solid 5px white;
+    left: -5px;
+
+    text-align: right;
+}
+
+header img {
+    display: block;
+    padding: 15px 20px;
+    margin-left: auto;
+}
+
+footer {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    color: #aaa;
+}
