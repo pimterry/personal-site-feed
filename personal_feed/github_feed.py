@@ -1,4 +1,4 @@
-from random import choice
+from random import choice, randint
 
 class GithubFeed:
     @property
@@ -12,6 +12,11 @@ class GithubFeed:
 class GithubFeedItem:
     def __init__(self):
         self.feed_template = "github_feed_item.html"
+        self.id = randint(0, 100)
+
+    def __lt__(self, other):
+        return self.id < other.id
+
 
 class GithubPullRequestFeedItem(GithubFeedItem):
     @property

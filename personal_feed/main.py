@@ -3,11 +3,14 @@ import cherrypy
 from flask import Flask, json
 
 from personal_feed.routes import setup_routes
+
 from personal_feed.github_feed import GithubFeed
+from personal_feed.twitter_feed import TwitterFeed
+from personal_feed.aggregated_feed import AggregatedFeed
 
 def build_app():
     app = Flask("Personal Feed")
-    setup_routes(app, GithubFeed())
+    setup_routes(app, AggregatedFeed([GithubFeed(), TwitterFeed()]))
     return app
 
 def run_server(app):
