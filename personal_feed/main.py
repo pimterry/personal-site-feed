@@ -10,7 +10,8 @@ from personal_feed.aggregated_feed import AggregatedFeed
 
 def build_app():
     app = Flask("Personal Feed")
-    setup_routes(app, AggregatedFeed([GithubFeed(), TwitterFeed()]))
+    setup_routes(app, AggregatedFeed([GithubFeed("pimterry"),
+                                      TwitterFeed()]))
     return app
 
 def run_server(app):
