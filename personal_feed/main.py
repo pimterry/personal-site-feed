@@ -8,10 +8,18 @@ from personal_feed.github_feed import GithubFeed
 from personal_feed.twitter_feed import TwitterFeed
 from personal_feed.aggregated_feed import AggregatedFeed
 
+
 def build_app():
     app = Flask("Personal Feed")
+
+    twitter_feed = TwitterFeed(os.environ["TWITTER_APP_KEY"],
+                               os.environ["TWITTER_APP_TOKEN"],
+                               os.environ["TWITTER_ACCESS_TOKEN"],
+                               os.environ["TWITTER_ACCESS_TOKEN_SECRET"],
+                               os.environ["TWITTER_USERNAME"])
+
     setup_routes(app, AggregatedFeed([GithubFeed("pimterry"),
-                                      TwitterFeed()]))
+                                      twitter_feed]))
     return app
 
 def run_server(app):
