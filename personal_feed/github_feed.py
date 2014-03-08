@@ -41,12 +41,21 @@ class GithubForkFeedItem(GithubFeedItem):
 
 class GithubCommitsEvent(GithubFeedItem):
     def __init__(self, events):
-        print(events)
-        super().__init__(max(events, key=lambda e: get_created_date(e)))
+        self.events = events
+        self.feed_template = "github_commits_feed_item.html"
+        self.timestamp = max(get_created_date(e) for e in events)
+        self.username = events[0]["actor"]
 
     @property
-    def description(self):
-        return "Some commits"
+    def repositories(self):
+        return set("%s/%s" % (e["repository"]["owner"], e["repository"]["name"])
+                   for e in self.events)
+
+    @property
+    def commit_messages(self):
+        for event in self.events:
+            for commit in event["payload"]["shas"]:
+                yield commit[2]
 
 class GithubFeed:
     def __init__(self, username):

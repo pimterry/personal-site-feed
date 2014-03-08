@@ -59,15 +59,12 @@ def event(event_type, timestamp=None, actor="pimterry"):
     return {
         "created_at": timestamp.isoformat(),
         "actor": actor,
-        "type": event_type
-    }
-
-def forkEvent(timestamp=None, actor="pimterry"):
-    fork_event = event("ForkEvent", timestamp, actor)
-    fork_event.update({
+        "type": event_type,
         "repository": {
             "owner": "junit-team",
             "name": "junit"
         }
-    })
-    return fork_event
+    }
+
+def forkEvent(timestamp=None, actor="pimterry"):
+    return event("ForkEvent", timestamp, actor)
