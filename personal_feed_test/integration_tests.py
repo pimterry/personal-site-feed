@@ -12,7 +12,7 @@ def mockTweet(text, timestamp=None, retweeted=False, username="pimterry"):
 
     return {
         "retweeted": retweeted,
-        "created_at": timestamp.strftime('%a %b %d %H:%M:%S %z %Y'),
+        "created_at": timestamp.strftime('%a %b %d %H:%M:%S +0000 %Y'),
         "text": text,
         "user": { "screen_name": username }
     }

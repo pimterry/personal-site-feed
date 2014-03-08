@@ -1,13 +1,18 @@
-from random import randint
+import functools
 import requests
+import dateutil.parser
 
+def get_created_date(event):
+    return dateutil.parser.parse(event["created_at"])
+
+@functools.total_ordering
 class GithubFeedItem:
     def __init__(self, event):
         self.feed_template = "github_feed_item.html"
-        self.id = randint(0, 100)
+        self.timestamp = get_created_date(event)
 
     def __lt__(self, other):
-        return self.id < other.id
+        return self.timestamp < other.timestamp
 
 class GithubPullRequestFeedItem(GithubFeedItem):
     @property
@@ -35,6 +40,10 @@ class GithubForkFeedItem(GithubFeedItem):
         return "Fork something"
 
 class GithubCommitsEvent(GithubFeedItem):
+    def __init__(self, events):
+        print(events)
+        super().__init__(max(events, key=lambda e: get_created_date(e)))
+
     @property
     def description(self):
         return "Some commits"
@@ -52,7 +61,7 @@ class GithubFeed:
 
         for event in events:
             if event["type"] == "PushEvent":
-                partial_commit_list.append("commit")
+                partial_commit_list.append(event)
             elif event["type"] in event_type_map:
                 if partial_commit_list:
                     yield GithubCommitsEvent(partial_commit_list)

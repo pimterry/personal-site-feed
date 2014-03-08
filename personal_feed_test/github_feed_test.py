@@ -1,8 +1,14 @@
-from flask import json
+from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import Mock, patch
 
 from personal_feed.github_feed import *
+
+def n_consecutive_days(n):
+    now = datetime.now(timezone.utc)
+    oneDay = timedelta(1)
+
+    return [now + i*oneDay for i in range(n)]
 
 @patch("personal_feed.github_feed.requests")
 class GithubFeedTest(unittest.TestCase):
@@ -19,6 +25,19 @@ class GithubFeedTest(unittest.TestCase):
 
         self.assertEqual(0, len(list(GithubFeed("pimterry").feed_items)))
 
+    def test_should_track_timestamps_on_items(self, requests_mock):
+        datetimes = n_consecutive_days(3)
+        requests_mock.get.return_value = mockResponse([
+            forkEvent(timestamp=datetimes[0]),
+            forkEvent(timestamp=datetimes[1]),
+            forkEvent(timestamp=datetimes[2])
+        ])
+
+        feed_items = list(GithubFeed("pimterry").feed_items)
+
+        self.assertListEqual([d.date() for d in datetimes],
+                             [i.timestamp.date() for i in feed_items])
+
     def test_should_batch_push_events(self, requests_mock):
         requests_mock.get.return_value = mockResponse([
             event("PushEvent"), event("PushEvent"), event("PushEvent")
@@ -33,20 +52,22 @@ class mockResponse:
     def json(self):
         return self.jsonData
 
-def event(event_type, timestamp=123123123, actor="pimterry"):
+def event(event_type, timestamp=None, actor="pimterry"):
+    if not timestamp:
+        timestamp = datetime.now(timezone.utc)
+
     return {
-        "created_at": timestamp,
+        "created_at": timestamp.isoformat(),
         "actor": actor,
         "type": event_type
     }
 
-def forkEvent(timestamp=123123123, actor="pimterry"):
-    return {
-        "created_at": timestamp,
-        "actor": actor,
-        "type": "ForkEvent",
+def forkEvent(timestamp=None, actor="pimterry"):
+    fork_event = event("ForkEvent", timestamp, actor)
+    fork_event.update({
         "repository": {
             "owner": "junit-team",
             "name": "junit"
         }
-    }
+    })
+    return fork_event

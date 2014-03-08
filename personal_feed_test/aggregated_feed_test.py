@@ -11,7 +11,7 @@ class AggregatedFeedTest(unittest.TestCase):
 
         aggregated_feed = AggregatedFeed([feed1, feed2])
 
-        self.assertEquals([1,2,3,5,5], [x.id for x in aggregated_feed.feed_items])
+        self.assertEquals([5,5,3,2,1], [x.id for x in aggregated_feed.feed_items])
 
 @total_ordering
 class MockItem:
