@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, timezone
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
-from personal_feed.github_feed import *
+from personal_feed.github.github_feed import *
 
 def n_consecutive_days(n):
     now = datetime.now(timezone.utc)
@@ -10,7 +10,7 @@ def n_consecutive_days(n):
 
     return [now + i*oneDay for i in range(n)]
 
-@patch("personal_feed.github_feed.requests")
+@patch("personal_feed.github.github_feed.requests")
 class GithubFeedTest(unittest.TestCase):
     def test_should_make_request_for_username(self, requests_mock):
         username = "pimterry"

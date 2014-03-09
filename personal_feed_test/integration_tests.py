@@ -46,10 +46,10 @@ class IntegrationTests(unittest.TestCase):
         self.addCleanup(envPatcher.stop)
 
     def patchFeeds(self):
-        twitterPatch = patch("personal_feed.twitter_feed.Twython")
+        twitterPatch = patch("personal_feed.twitter.twitter_feed.Twython")
         self.twitterMock = twitterPatch.start().return_value
         self.addCleanup(twitterPatch.stop)
 
-        requestsPatch = patch("personal_feed.github_feed.requests")
+        requestsPatch = patch("personal_feed.github.github_feed.requests")
         self.requestsMock = requestsPatch.start()
         self.addCleanup(requestsPatch.stop)

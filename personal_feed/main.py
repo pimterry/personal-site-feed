@@ -1,11 +1,11 @@
 import os
 import cherrypy
-from flask import Flask, json
+from flask import Flask
 
 from personal_feed.routes import setup_routes
 
-from personal_feed.github_feed import GithubFeed
-from personal_feed.twitter_feed import TwitterFeed
+from personal_feed.github.github_feed import GithubFeed
+from personal_feed.twitter.twitter_feed import TwitterFeed
 from personal_feed.aggregated_feed import AggregatedFeed
 
 
