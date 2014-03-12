@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import patch
 
+from .github_stubs import *
 from personal_feed.github.github_feed import *
 
 def n_consecutive_days(n):
@@ -52,19 +53,3 @@ class mockResponse:
     def json(self):
         return self.jsonData
 
-def event(event_type, timestamp=None, actor="pimterry"):
-    if not timestamp:
-        timestamp = datetime.now(timezone.utc)
-
-    return {
-        "created_at": timestamp.isoformat(),
-        "actor": actor,
-        "type": event_type,
-        "repository": {
-            "owner": "junit-team",
-            "name": "junit"
-        }
-    }
-
-def forkEvent(timestamp=None, actor="pimterry"):
-    return event("ForkEvent", timestamp, actor)

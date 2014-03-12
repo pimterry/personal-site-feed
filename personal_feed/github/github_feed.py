@@ -15,9 +15,13 @@ class GithubFeedItem:
         return self.timestamp < other.timestamp
 
 class GithubPullRequestFeedItem(GithubFeedItem):
+    def __init__(self, event):
+        super().__init__(event)
+        self.event = event
+
     @property
     def description(self):
-        return "A Pull Request"
+        return self.event["payload"]["pull_request"]["title"]
 
 class GithubReleaseFeedItem(GithubFeedItem):
     @property

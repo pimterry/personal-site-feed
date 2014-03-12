@@ -2,9 +2,9 @@ from datetime import datetime
 import unittest
 from unittest.mock import patch
 from collections import defaultdict
-from flask import json
 
 from personal_feed.main import build_app
+from .github.github_stubs import *
 
 def mockTweet(text, timestamp=None, retweeted=False, username="pimterry"):
     if not timestamp:
@@ -28,6 +28,20 @@ class IntegrationTests(unittest.TestCase):
 
         self.assertIn("a tweet", result)
         self.assertIn("another tweet", result)
+
+    def test_root_page_pulls_github_events(self):
+        client = self.buildClient()
+
+        self.requestsMock.get.return_value.json.return_value = [
+            pushEvent("my-first-commit"),
+            forkEvent(),
+            pullRequestEvent("a-pull-request")
+        ]
+        result = str(client.get('/').data)
+
+        self.assertIn("my-first-commit", result)
+        self.assertIn("Fork", result)
+        self.assertIn("a-pull-request", result)
 
     def buildClient(self, envSettings={}):
         defaultEnv = defaultdict(lambda: None)
