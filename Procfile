@@ -1,1 +1,1 @@
-web: python personal_feed/main.py
+web: NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program python personal_feed/main.py
