@@ -60,13 +60,18 @@ class GithubWatchFeedItem(GithubFeedItem):
         return "Watched something"
 
 class GithubForkFeedItem(GithubFeedItem):
+    def __init__(self, event):
+        super().__init__(event)
+        self.repo_owner = event["repository"]["owner"]
+        self.repo_name = event["repository"]["name"]
+
     @classmethod
     def matches_data(cls, event_data):
         return event_data["type"] == "ForkEvent"
 
     @property
     def description(self):
-        return "Fork something"
+        return "Forked %s/%s" % (self.repo_owner, self.repo_name)
 
 class GithubCommitsEvent(GithubFeedItem):
     def __init__(self, events):

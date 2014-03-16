@@ -34,7 +34,7 @@ class IntegrationTests(unittest.TestCase):
 
         self.requestsMock.get.return_value.json.return_value = [
             pushEvent("my-first-commit"),
-            forkEvent(),
+            forkEvent("forked-repo"),
             createdBranch("a branch"),
             pullRequestEvent("a-pull-request"),
             createdRepo("new repo"),
@@ -42,7 +42,7 @@ class IntegrationTests(unittest.TestCase):
         result = str(client.get('/').data)
 
         self.assertIn("my-first-commit", result)
-        self.assertIn("Fork", result)
+        self.assertIn("forked-repo", result)
         self.assertIn("a-pull-request", result)
         self.assertIn("new repo", result)
         self.assertNotIn("a branch", result)

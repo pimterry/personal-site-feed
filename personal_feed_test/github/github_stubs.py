@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-def event(event_type, timestamp=None, actor="pimterry"):
+def githubEvent(event_type, timestamp=None, actor="pimterry"):
     if not timestamp:
         timestamp = datetime.now(timezone.utc)
 
@@ -15,7 +15,7 @@ def event(event_type, timestamp=None, actor="pimterry"):
     }
 
 def pushEvent(commit_message, timestamp=None, actor="pimterry"):
-    eventData = event("PushEvent", timestamp, actor)
+    eventData = githubEvent("PushEvent", timestamp, actor)
     eventData.update({
         "payload": {
             "shas": [
@@ -26,7 +26,7 @@ def pushEvent(commit_message, timestamp=None, actor="pimterry"):
     return eventData
 
 def pullRequestEvent(pull_request_title, timestamp=None, actor="pimterry"):
-    eventData = event("PullRequestEvent", timestamp, actor)
+    eventData = githubEvent("PullRequestEvent", timestamp, actor)
     eventData.update({
         "payload": {
             "pull_request": {
@@ -36,11 +36,18 @@ def pullRequestEvent(pull_request_title, timestamp=None, actor="pimterry"):
     })
     return eventData
 
-def forkEvent(timestamp=None, actor="pimterry"):
-    return event("ForkEvent", timestamp, actor)
+def forkEvent(repo_name, owner="junit-team", timestamp=None, actor="pimterry"):
+    eventData = githubEvent("ForkEvent", timestamp, actor)
+    eventData.update({
+        "repository": {
+            "name": repo_name,
+            "owner": owner
+        }
+    })
+    return eventData
 
 def createdRepo(repoName, timestamp=None, actor="pimterry"):
-    eventData = event("CreateEvent", timestamp, actor)
+    eventData = githubEvent("CreateEvent", timestamp, actor)
     eventData.update({
         "payload": {
             "ref_type": "repository"
@@ -52,7 +59,7 @@ def createdRepo(repoName, timestamp=None, actor="pimterry"):
     return eventData
 
 def createdBranch(branchName, timestamp=None, actor="pimterry"):
-    eventData = event("CreateEvent", timestamp, actor)
+    eventData = githubEvent("CreateEvent", timestamp, actor)
     eventData.update({
         "payload": {
             "ref_type": "branch",
