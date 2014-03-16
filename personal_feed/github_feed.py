@@ -15,55 +15,26 @@ class GithubFeedItem:
         return self.timestamp < other.timestamp
 
 class GithubPullRequestFeedItem(GithubFeedItem):
-    def __init__(self, event):
-        super().__init__(event)
-        self.event = event
-
-    @classmethod
-    def matches_data(cls, event_data):
-        return event_data["type"] == "PullRequestEvent"
-
     @property
     def description(self):
-        return self.event["payload"]["pull_request"]["title"]
+        return "A Pull Request"
 
 class GithubReleaseFeedItem(GithubFeedItem):
-    @classmethod
-    def matches_data(cls, event_data):
-        return event_data["type"] == "ReleaseEvent"
-
     @property
     def description(self):
         return "A New Release"
 
 class GithubCreateRepositoryFeedItem(GithubFeedItem):
-    def __init__(self, event):
-        super().__init__(event)
-        self.repo_name = event["repository"]["name"]
-
-    @classmethod
-    def matches_data(cls, event_data):
-        return (event_data["type"] == "CreateEvent" and
-                event_data["payload"]["ref_type"] == "repository")
-
     @property
     def description(self):
-        return "Created repository '%s'" % self.repo_name
+        return "Created repository"
 
 class GithubWatchFeedItem(GithubFeedItem):
-    @classmethod
-    def matches_data(cls, event_data):
-        return event_data["type"] == "WatchEvent"
-
     @property
     def description(self):
         return "Watched something"
 
 class GithubForkFeedItem(GithubFeedItem):
-    @classmethod
-    def matches_data(cls, event_data):
-        return event_data["type"] == "ForkEvent"
-
     @property
     def description(self):
         return "Fork something"
@@ -73,6 +44,7 @@ class GithubCommitsEvent(GithubFeedItem):
         self.events = events
         self.feed_template = "github_commits_feed_item.html"
         self.timestamp = max(get_created_date(e) for e in events)
+        self.username = events[0]["actor"]
 
     @property
     def repositories(self):
@@ -99,15 +71,13 @@ class GithubFeed:
         for event in events:
             if event["type"] == "PushEvent":
                 partial_commit_list.append(event)
-
-            EventClass = next((e for e in event_classes if e.matches_data(event)), None)
-
-            if EventClass:
-                if partial_commit_list:
+            elif event["type"] in event_type_map:
                     yield GithubCommitsEvent(partial_commit_list)
                     partial_commit_list = []
 
-                yield EventClass(event)
+                yield event_type_map[event["type"]](event)
+            else:
+                continue
 
         if partial_commit_list:
             yield GithubCommitsEvent(partial_commit_list)
@@ -116,10 +86,11 @@ class GithubFeed:
     def feed_items(self):
         return self._get_items_for_events(self._get_user_events(self.username))
 
-event_classes = [
-    GithubPullRequestFeedItem,
-    GithubForkFeedItem,
-    GithubCreateRepositoryFeedItem,
-    GithubWatchFeedItem,
-    GithubReleaseFeedItem
-]
+event_type_map = {
+    "PullRequestEvent": GithubPullRequestFeedItem,
+    if partial_commit_list:
+    "ForkEvent": GithubForkFeedItem,
+    "CreateEvent": GithubCreateRepositoryFeedItem,
+    "WatchEvent": GithubWatchFeedItem,
+    "ReleaseEvent": GithubReleaseFeedItem
+}

@@ -1,6 +1,6 @@
 <div>
     <img class="feed-icon" src="/static/images/GitHub-Mark-32px.png" />
-    {{ item.username }} pushed commits to {{ item.repositories|join(', ') }}:
+    Pushed commits to {{ item.repositories|join(', ') }}:
     <br />
     <ul>
     {%- for commit_message in item.commit_messages %}

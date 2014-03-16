@@ -39,6 +39,24 @@ class GithubFeedTest(unittest.TestCase):
         self.assertListEqual([d.date() for d in datetimes],
                              [i.timestamp.date() for i in feed_items])
 
+    def test_should_build_new_repo_events(self, requests_mock):
+        requests_mock.get.return_value = mockResponse([
+            createdRepo("RepoName")
+        ])
+
+        items = list(GithubFeed("pimterry").feed_items)
+        self.assertEqual(1, len(items))
+        self.assertEqual("Created repository 'RepoName'", items[0].description)
+
+    def test_should_not_build_new_branch_events(self, requests_mock):
+        requests_mock.get.return_value = mockResponse([
+            createdBranch("BranchName")
+        ])
+
+        items = list(GithubFeed("pimterry").feed_items)
+        self.assertEqual(0, len(items))
+
+
     def test_should_batch_push_events(self, requests_mock):
         requests_mock.get.return_value = mockResponse([
             event("PushEvent"), event("PushEvent"), event("PushEvent")

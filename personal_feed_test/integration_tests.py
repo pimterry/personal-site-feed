@@ -35,13 +35,17 @@ class IntegrationTests(unittest.TestCase):
         self.requestsMock.get.return_value.json.return_value = [
             pushEvent("my-first-commit"),
             forkEvent(),
-            pullRequestEvent("a-pull-request")
+            createdBranch("a branch"),
+            pullRequestEvent("a-pull-request"),
+            createdRepo("new repo"),
         ]
         result = str(client.get('/').data)
 
         self.assertIn("my-first-commit", result)
         self.assertIn("Fork", result)
         self.assertIn("a-pull-request", result)
+        self.assertIn("new repo", result)
+        self.assertNotIn("a branch", result)
 
     def buildClient(self, envSettings={}):
         defaultEnv = defaultdict(lambda: None)

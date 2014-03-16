@@ -38,3 +38,28 @@ def pullRequestEvent(pull_request_title, timestamp=None, actor="pimterry"):
 
 def forkEvent(timestamp=None, actor="pimterry"):
     return event("ForkEvent", timestamp, actor)
+
+def createdRepo(repoName, timestamp=None, actor="pimterry"):
+    eventData = event("CreateEvent", timestamp, actor)
+    eventData.update({
+        "payload": {
+            "ref_type": "repository"
+        },
+        "repository": {
+            "name": repoName
+        }
+    })
+    return eventData
+
+def createdBranch(branchName, timestamp=None, actor="pimterry"):
+    eventData = event("CreateEvent", timestamp, actor)
+    eventData.update({
+        "payload": {
+            "ref_type": "branch",
+            "ref": branchName
+        },
+        "repository": {
+            "name": "repo-name-for-branch"
+        }
+    })
+    return eventData
