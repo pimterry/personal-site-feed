@@ -21,7 +21,7 @@ class IntegrationTests(unittest.TestCase):
     def test_root_page_pulls_tweets(self):
         client = self.buildClient()
         self.twitterMock.get_user_timeline.return_value = [
-            mockTweet("a tweet"), mockTweet("another tweet")
+            mockTweet("a tweet"), mockTweet("another tweet", retweeted=True)
         ]
 
         result = str(client.get('/').data)
