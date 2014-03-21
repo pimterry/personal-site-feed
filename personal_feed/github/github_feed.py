@@ -51,13 +51,19 @@ class GithubCreateRepositoryFeedItem(GithubFeedItem):
         return "Created repository '%s'" % self.repo_name
 
 class GithubWatchFeedItem(GithubFeedItem):
+    def __init__(self, event):
+        super().__init__(event)
+        self.repo_owner = event["repository"]["owner"]
+        self.repo_name = event["repository"]["name"]
+
     @classmethod
     def matches_data(cls, event_data):
-        return event_data["type"] == "WatchEvent"
+        return (event_data["type"] == "WatchEvent" and
+                event_data["payload"]["action"] == "started")
 
     @property
     def description(self):
-        return "Watched something"
+        return "Starred %s/%s" % (self.repo_owner, self.repo_name)
 
 class GithubForkFeedItem(GithubFeedItem):
     def __init__(self, event):

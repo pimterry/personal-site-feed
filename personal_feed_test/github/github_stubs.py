@@ -36,6 +36,19 @@ def pullRequestEvent(pull_request_title, timestamp=None, actor="pimterry"):
     })
     return eventData
 
+def starEvent(repo_name, owner="knockout", timestamp=None, actor="pimterry"):
+    eventData = githubEvent("WatchEvent", timestamp, actor)
+    eventData.update({
+        "payload": {
+            "action": "started"
+        },
+        "repository": {
+            "name": repo_name,
+            "owner": owner
+        }
+    })
+    return eventData
+
 def forkEvent(repo_name, owner="junit-team", timestamp=None, actor="pimterry"):
     eventData = githubEvent("ForkEvent", timestamp, actor)
     eventData.update({
@@ -53,7 +66,8 @@ def createdRepo(repoName, timestamp=None, actor="pimterry"):
             "ref_type": "repository"
         },
         "repository": {
-            "name": repoName
+            "name": repoName,
+            "owner": actor
         }
     })
     return eventData

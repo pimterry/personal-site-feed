@@ -37,6 +37,7 @@ class IntegrationTests(unittest.TestCase):
             forkEvent("forked-repo"),
             createdBranch("a branch"),
             pullRequestEvent("a-pull-request"),
+            starEvent("starred-repo"),
             createdRepo("new repo"),
         ]
         result = str(client.get('/').data)
@@ -44,6 +45,7 @@ class IntegrationTests(unittest.TestCase):
         self.assertIn("my-first-commit", result)
         self.assertIn("forked-repo", result)
         self.assertIn("a-pull-request", result)
+        self.assertIn("starred-repo", result)
         self.assertIn("new repo", result)
         self.assertNotIn("a branch", result)
 
