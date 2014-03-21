@@ -32,9 +32,9 @@ class TwitterFeedItem:
 class TweetFeedItem(TwitterFeedItem):
     @property
     def description(self):
-        return "@%s tweeted: '%s'" % (self.tweet["user"]["screen_name"], self.tweet["text"])
+        return "Tweeted: '%s'" % (self.tweet["text"], )
 
 class RetweetFeedItem(TwitterFeedItem):
     @property
     def description(self):
-        return "@%s retweeted: '%s'" % (self.tweet["user"]["screen_name"], self.tweet["text"])
+        return "Retweeted: '%s'" % (self.tweet["text"], )
