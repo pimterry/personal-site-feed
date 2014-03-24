@@ -1,4 +1,4 @@
-import unittest
+import unittest, re
 from unittest.mock import Mock, patch
 
 from personal_feed.routes import setup_routes
@@ -13,6 +13,20 @@ class RoutesTests(unittest.TestCase):
     def test_root_route_throws_no_exceptions(self, renderer):
         self.app['/']()
 
+    def test_blog_route_redirect_is_permanent(self, renderer):
+        result = self.app['/blog/*/*']("post")
+        self.assertEqual(301, result.status_code)
+
+    def test_blog_route_swaps_underscores_for_dashes(self, renderer):
+        result = self.app['/blog/*/*']("post_post_post")
+        self.assertEqual("http://blog.tim-perry.co.uk/post-post-post",
+                         result.location)
+
+    def test_blog_route_forces_lowercasing(self, renderer):
+        result = self.app['/blog/*/*']("Post")
+        self.assertEqual("http://blog.tim-perry.co.uk/post",
+                         result.location)
+
 class AppMock:
     """
     Acts as a mock flask app, but only recording the routes,
@@ -26,6 +40,7 @@ class AppMock:
         return self.decoratorFor(route)
 
     def decoratorFor(self, route):
+        route = re.sub("<.*?>", "*", route)
         def decorator(routeTarget):
             self.routes[route] = routeTarget
             return routeTarget

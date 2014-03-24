@@ -49,6 +49,15 @@ class IntegrationTests(unittest.TestCase):
         self.assertIn("new repo", result)
         self.assertNotIn("a branch", result)
 
+    def test_blog_route_redirects_to_real_blog(self):
+        client = self.buildClient()
+        result = client.get('/blog/2011/12/26/Third_Time_Lucky',
+                            follow_redirects=False)
+
+        self.assertEqual(301, result.status_code)
+        self.assertEqual("http://blog.tim-perry.co.uk/third-time-lucky",
+                         result.headers["location"])
+
     def buildClient(self, envSettings={}):
         defaultEnv = defaultdict(lambda: None)
         defaultEnv.update(envSettings)
